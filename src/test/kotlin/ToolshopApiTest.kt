@@ -43,7 +43,7 @@ class ToolshopApiTest {
 
     @Test
     fun `API-4 TQ-110 Sort products by price ascending`() {
-        val prices: List<Int> = Given {
+        val prices = Given {
             accept("application/json")
             queryParam("sort", "price,asc")
         } When {
@@ -52,7 +52,7 @@ class ToolshopApiTest {
             statusCode(200)
             body("data.size()", greaterThan(1))
         } Extract {
-            jsonPath().getList("data.price")
+            jsonPath().getList<Number>("data.price").map { it.toDouble() }
         }
         val outOfOrder = prices.zipWithNext().firstOrNull { (a, b) -> a > b }
         assertNull(outOfOrder, "Prices not sorted ascending, first out-of-order pair: $outOfOrder")
